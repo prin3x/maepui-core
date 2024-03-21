@@ -1,0 +1,24 @@
+service: nestjs-lambda-service
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: staging
+  region: ap-southeast-1 # Choose your preferred AWS region
+
+functions:
+  api:
+    handler: dist/lamda.handler # The file and export of your Lambda handler
+    events:
+      - http:
+          path: /
+          method: any
+      - http:
+          path: '{proxy+}'
+          method: any
+package:
+  exclude:
+    - '**'
+  include:
+    - node_modules/**
+    - dist/**
