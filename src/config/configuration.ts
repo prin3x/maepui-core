@@ -12,9 +12,9 @@ export default () => ({
     logging: process.env.POSTGRES_LOGGING === 'true',
     // dropSchema: true,
     entities: ['dist/**/*.entity{.ts,.js}'],
-    // ssl: {
-    //   rejectUnauthorized: false,
-    // },
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
   // s3: {
   //   awsAccessKeyID: process.env.AWS_ACCESS_KEY_ID,
