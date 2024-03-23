@@ -1,6 +1,6 @@
-import { BLOG_STATUS_ENUM } from 'blogs/entities/blog.entity';
+import { BLOG_STATUS_ENUM } from 'src/blogs/entities/blog.entity';
 import { IsEnum, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
-import { Media } from 'media/entities/media.entity';
+import { Media } from 'src/media/entities/media.entity';
 
 export class CreateBlogDto {
   @IsString()

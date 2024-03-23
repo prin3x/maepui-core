@@ -6,12 +6,12 @@ import {
   NotAcceptableException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { IAuthPayload } from './auth.decorator';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from 'users/users.service';
-import { MyMailerService } from 'mailer/mailer.service';
+import { UsersService } from 'src/users/users.service';
+import { MyMailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class AuthService {

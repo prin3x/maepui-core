@@ -1,7 +1,7 @@
 import { Injectable, Logger, Param, UploadedFile } from '@nestjs/common';
-import { MinioService } from 'minio/minio.service';
+import { MinioService } from 'src/minio/minio.service';
 import * as fs from 'fs';
-import { MediaService } from 'media/media.service';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class UploadService {

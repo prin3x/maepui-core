@@ -1,6 +1,6 @@
 import { IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
-import { Media } from 'media/entities/media.entity';
-import { ProductStatusEnum } from 'products/entities/product.entity';
+import { Media } from 'src/media/entities/media.entity';
+import { ProductStatusEnum } from 'src/products/entities/product.entity';
 
 export class CreateProductDto {
   @IsString()

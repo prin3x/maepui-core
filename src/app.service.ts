@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category, CategoryTypeEnum } from 'categories/entities/category.entity';
-import { Roles } from 'roles/entities/roles.entity';
-import { Tag } from 'tags/entities/tag.entity';
+import { Category, CategoryTypeEnum } from 'src/categories/entities/category.entity';
+import { Roles } from 'src/roles/entities/roles.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
 import { Repository } from 'typeorm';
-import { User } from 'users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AppService {

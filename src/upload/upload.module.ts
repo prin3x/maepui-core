@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { MinioModule } from 'minio/minio.module';
+import { MinioModule } from 'src/minio/minio.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { UploadController } from './upload.controller';
-import { MediaModule } from 'media/media.module';
+import { MediaModule } from 'src/media/media.module';
 
 @Module({
   imports: [

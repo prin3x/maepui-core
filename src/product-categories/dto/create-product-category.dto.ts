@@ -1,6 +1,6 @@
-import { Category } from 'categories/entities/category.entity';
+import { Category } from 'src/categories/entities/category.entity';
 import { IsNumber } from 'class-validator';
-import { Product } from 'products/entities/product.entity';
+import { Product } from 'src/products/entities/product.entity';
 
 export class CreateProductCategoryDto {
   // product entity

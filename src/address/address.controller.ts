@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { AuthPayload, IAuthPayload } from 'auth/auth.decorator';
-import { JwtAuthGuard } from 'auth/jwt-auth-guard';
+import { AuthPayload, IAuthPayload } from 'src/auth/auth.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 
 @Controller('address')
 export class AddressController {

@@ -1,5 +1,5 @@
 import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { OrderItem } from 'order-items/entities/order-item.entity';
+import { OrderItem } from 'src/order-items/entities/order-item.entity';
 
 export class CreateOrderDto {
   @IsString()

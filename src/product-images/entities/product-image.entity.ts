@@ -1,5 +1,5 @@
-import { Media } from 'media/entities/media.entity';
-import { Product } from 'products/entities/product.entity';
+import { Media } from 'src/media/entities/media.entity';
+import { Product } from 'src/products/entities/product.entity';
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

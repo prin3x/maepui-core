@@ -1,4 +1,4 @@
-import { OrderItem } from 'order-items/entities/order-item.entity';
+import { OrderItem } from 'src/order-items/entities/order-item.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from 'users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
 

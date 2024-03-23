@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import { Category, CategoryStatusEnum } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { MediaService } from 'media/media.service';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class CategoriesService {

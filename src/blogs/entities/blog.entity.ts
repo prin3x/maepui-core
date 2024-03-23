@@ -1,6 +1,6 @@
-import { Category } from 'categories/entities/category.entity';
-import { Media } from 'media/entities/media.entity';
-import { Tag } from 'tags/entities/tag.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { Media } from 'src/media/entities/media.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,7 +10,6 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';

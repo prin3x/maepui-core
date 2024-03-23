@@ -1,5 +1,5 @@
-import { Blog } from 'blogs/entities/blog.entity';
-import { Product } from 'products/entities/product.entity';
+import { Blog } from 'src/blogs/entities/blog.entity';
+import { Product } from 'src/products/entities/product.entity';
 import {
   Column,
   CreateDateColumn,

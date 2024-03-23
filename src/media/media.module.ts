@@ -3,7 +3,7 @@ import { MediaController } from './media.controller';
 import { MediaService } from './media.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Media } from './entities/media.entity';
-import { MinioModule } from 'minio/minio.module';
+import { MinioModule } from 'src/minio/minio.module';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({

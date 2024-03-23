@@ -1,6 +1,6 @@
-import { CategoryStatusEnum, CategoryTypeEnum } from 'categories/entities/category.entity';
+import { CategoryStatusEnum, CategoryTypeEnum } from 'src/categories/entities/category.entity';
 import { IsEnum, IsObject, IsOptional, IsString } from 'class-validator';
-import { Media } from 'media/entities/media.entity';
+import { Media } from 'src/media/entities/media.entity';
 
 export class CreateCategoryDto {
   @IsString()

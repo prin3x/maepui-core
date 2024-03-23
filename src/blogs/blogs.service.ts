@@ -5,9 +5,9 @@ import { Like, Repository } from 'typeorm';
 import { BLOG_STATUS_ENUM, Blog } from './entities/blog.entity';
 import { isEmpty } from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagsService } from 'tags/tags.service';
-import { CategoriesService } from 'categories/categories.service';
-import { MinioService } from 'minio/minio.service';
+import { TagsService } from 'src/tags/tags.service';
+import { CategoriesService } from 'src/categories/categories.service';
+import { MinioService } from 'src/minio/minio.service';
 import { FindBlogDto } from './dto/find-blog.dto';
 
 @Injectable()

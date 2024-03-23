@@ -5,9 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { FindOrderDto } from './dto/find-orders.dto';
-import { Address } from 'address/entities/address.entity';
-import { User } from 'users/entities/user.entity';
-import { OrderItem } from 'order-items/entities/order-item.entity';
+import { Address } from 'src/address/entities/address.entity';
+import { User } from 'src/users/entities/user.entity';
+import { OrderItem } from 'src/order-items/entities/order-item.entity';
 
 @Injectable()
 export class OrdersService {
@@ -75,7 +75,7 @@ export class OrdersService {
     const offset = paginate ? (page - 1) * limit : 0;
 
     let orders: Order[] = [];
-    let meta = { total: 0, page, limit };
+    const meta = { total: 0, page, limit };
 
     orders = await this.orderRepository.find({
       relations: ['orderItems', 'customer'],

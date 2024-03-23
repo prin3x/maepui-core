@@ -11,12 +11,12 @@ import { Product, ProductStatusEnum } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, ILike, In, Like, Repository } from 'typeorm';
 import { isEmpty } from 'lodash';
-import { CategoriesService } from 'categories/categories.service';
-import { ProductImagesService } from 'product-images/product-images.service';
+import { CategoriesService } from 'src/categories/categories.service';
+import { ProductImagesService } from 'src/product-images/product-images.service';
 import { ConfigService } from '@nestjs/config';
-import { MediaService } from 'media/media.service';
-import { MinioService } from 'minio/minio.service';
-import { TagsService } from 'tags/tags.service';
+import { MediaService } from 'src/media/media.service';
+import { MinioService } from 'src/minio/minio.service';
+import { TagsService } from 'src/tags/tags.service';
 import { FindProductDto } from './dto/find-product.dto';
 
 @Injectable()
