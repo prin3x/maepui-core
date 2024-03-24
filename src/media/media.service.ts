@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MediaService {
+  private readonly logger = new Logger(MediaService.name);
   constructor(
     @InjectRepository(Media)
     private readonly mediaRepository: Repository<Media>,
@@ -56,6 +57,7 @@ export class MediaService {
   }
 
   async generateStaticUrl(bucket: string, key: string): Promise<string> {
+    this.logger.log(`${this.configService.get('MINIO_URL')}/${key}`);
     if (this.configService.get('MINIO_URL').includes('s3')) {
       return `${this.configService.get('MINIO_URL')}/${key}`;
     }
