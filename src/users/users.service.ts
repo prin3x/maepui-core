@@ -45,7 +45,7 @@ export class UsersService {
   async findAll(query: FindUserDto) {
     this.logger.log('[UsersService] - findAll');
     const { page = 1, paginate } = query;
-    const limit = Number(paginate) ?? 10;
+    const limit = Number(paginate) || 10;
     const offset = paginate ? (page - 1) * limit : 0;
 
     let users: User[] = [];
