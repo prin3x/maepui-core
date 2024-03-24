@@ -34,7 +34,7 @@ export class MinioService {
 
   async getObjectUrl(bucketName: string, objectName: string): Promise<string> {
     try {
-      const presignedUrl = await this.minioClient.presignedGetObject(bucketName, objectName, 60 * 60 * 24 * 30);
+      const presignedUrl = await this.minioClient.presignedGetObject(bucketName, objectName);
       return presignedUrl;
     } catch (error) {
       Logger.error(`Error generating presigned URL for object ${objectName}: ${error.message}`);
