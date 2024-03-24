@@ -72,3 +72,4 @@ amplifytools.xcconfig
 
 **/node_modules
 *.zip
+ngrok.yml
