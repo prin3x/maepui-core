@@ -5,6 +5,7 @@ import { Roles } from 'src/roles/entities/roles.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class AppService {
@@ -17,6 +18,7 @@ export class AppService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
+    private readonly authService: AuthService,
   ) {}
   checkServerHealth(): string {
     return 'Server is healthy';
@@ -31,23 +33,15 @@ export class AppService {
   }
 
   async seedRolesAndUser() {
-    const roles = await this.rolesRepository.find();
-    if (roles.length === 0) {
-      const role = this.rolesRepository.create({
-        name: 'admin',
-        permissions: 'admin role',
-      });
-      await this.rolesRepository.save(role);
-      const user = this.userRepository.create({
-        email: 'admin',
-        password_hash: '124124',
-        status: 'ACTIVE',
-        roles: [role],
-      });
-      await this.userRepository.save(user);
+    await this.userRepository.delete({
+      email: 'admin@example.com',
+    });
+    await this.authService.signUp({
+      email: 'admin@example.com',
+      password: '123123123',
+    });
 
-      return 'Roles and user seeded';
-    }
+    return 'Roles and user seeded';
   }
 
   async seedProductCategories() {
