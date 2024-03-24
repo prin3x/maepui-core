@@ -56,6 +56,9 @@ export class MediaService {
   }
 
   async generateStaticUrl(bucket: string, key: string): Promise<string> {
+    if (this.configService.get('MINIO_ENDPOINT').includes('s3')) {
+      return `${this.configService.get('MINIO_URL')}/${key}`;
+    }
     return `${this.configService.get('MINIO_URL')}/${bucket}/${key}`;
   }
 
