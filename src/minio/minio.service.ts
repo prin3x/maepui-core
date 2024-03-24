@@ -44,7 +44,7 @@ export class MinioService {
 
   async generateStaticUrl(bucketName: string, objectName: string): Promise<string> {
     // if staging or production
-    if (this.configService.get('NODE_ENV') === 'staging' || this.configService.get('NODE_ENV') === 'production') {
+    if (this.configService.get('MINIO_URL').includes('s3')) {
       return `${this.configService.get('MINIO_URL')}/${objectName}`;
     }
     return `${this.configService.get('MINIO_URL')}/${bucketName}/${objectName}`;
