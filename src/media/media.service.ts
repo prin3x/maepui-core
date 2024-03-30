@@ -4,7 +4,6 @@ import { Media, MediaTypeEnum } from './entities/media.entity';
 import { In, Repository } from 'typeorm';
 import { MinioService } from 'src/minio/minio.service';
 import * as fs from 'fs';
-import { MediaResponseInterface } from './dto/media.response.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
