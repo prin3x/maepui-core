@@ -34,6 +34,6 @@ export class MediaController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mediaService.delete(+id);
+    return this.mediaService.delete(id);
   }
 }

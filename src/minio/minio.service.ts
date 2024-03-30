@@ -66,12 +66,15 @@ export class MinioService {
     }
   }
 
-  async deleteObject(bucketName: string, objectName: string): Promise<void> {
+  async deleteObject(bucketName: string, objectName: string[]): Promise<void> {
+    await this.minioClient.removeObjects(bucketName, objectName);
+  }
+  async bulkDeleteObjects(bucketName: string, objectNames: string[]): Promise<void> {
     try {
-      await this.minioClient.removeObject(bucketName, objectName);
-      Logger.log(`Object ${objectName} removed successfully from bucket ${bucketName}`);
+      await this.minioClient.removeObjects(bucketName, objectNames);
+      Logger.log(`Objects ${objectNames.join(', ')} removed successfully from bucket ${bucketName}`);
     } catch (error) {
-      Logger.error(`Error removing object ${objectName} from bucket ${bucketName}: ${error.message}`);
+      Logger.error(`Error removing objects from bucket ${bucketName}: ${error.message}`);
       throw error;
     }
   }

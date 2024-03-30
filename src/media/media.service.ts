@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Media, MediaTypeEnum } from './entities/media.entity';
 import { In, Repository } from 'typeorm';
@@ -64,6 +64,10 @@ export class MediaService {
     return `${this.configService.get('MINIO_URL')}/${bucket}/${key}`;
   }
 
+  async bulkRemoveFiles(bucket: string, keys: string[]): Promise<void> {
+    await this.minioService.bulkDeleteObjects(bucket, keys);
+  }
+
   async findAll(): Promise<Media[]> {
     const media = await this.mediaRepository.find();
 
@@ -112,11 +116,12 @@ export class MediaService {
     const objectName = media.key;
 
     try {
-      await this.minioService.deleteObject(bucket, objectName);
-      await this.mediaRepository.delete(id);
+      await this.minioService.deleteObject(bucket, [objectName]);
+      await this.mediaRepository.softDelete(id);
+      Logger.log(`Object ${objectName} removed successfully from bucket ${bucket}`);
     } catch (error) {
       Logger.error(`Error deleting file from Minio: ${error.message}`);
-      throw error;
+      throw new BadRequestException(error);
     }
   }
 
@@ -126,11 +131,15 @@ export class MediaService {
       Logger.log(`All objects removed successfully from bucket ${bucketName}`);
     } catch (error) {
       Logger.error(`Error removing objects from bucket ${bucketName}: ${error.message}`);
-      throw error;
+      throw new BadRequestException(error);
     }
   }
 
   async bulkDelete(ids: number[]): Promise<void> {
-    await this.mediaRepository.softDelete(ids);
+    const mediaDeletePromises = ids.map(async (id) => {
+      return this.delete(id);
+    });
+
+    await Promise.all(mediaDeletePromises);
   }
 }
