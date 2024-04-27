@@ -142,14 +142,6 @@ export class ProductsService {
       relations: ['categories', 'galleries', 'tags', 'thumbnail'],
     });
 
-    // Add url to galleries
-    product.galleries = await Promise.all(
-      product.galleries.map(async (gal) => {
-        gal.url = await this.minioService.getObjectUrl(gal.bucket, gal.key);
-        return gal;
-      }),
-    );
-
     return product;
   }
 
