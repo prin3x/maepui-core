@@ -1,9 +1,6 @@
 import { Category } from 'src/categories/entities/category.entity';
 import { Media } from 'src/media/entities/media.entity';
 import { OrderItem } from 'src/order-items/entities/order-item.entity';
-import { Order } from 'src/orders/entities/order.entity';
-import { ProductCategory } from 'src/product-categories/entities/product-category.entity';
-import { ProductImage } from 'src/product-images/entities/product-image.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import {
@@ -15,7 +12,6 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,

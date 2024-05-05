@@ -35,9 +35,9 @@ export class AddressController {
     return this.addressService.findOne(+id);
   }
 
-  @Post('/user/:userId')
-  createAddress(@Body() createAddressDto: CreateAddressDto, @Param('userId') userId: string) {
-    return this.addressService.create(createAddressDto, userId);
+  @Post('/:id')
+  createAddress(@Body() createAddressDto: CreateAddressDto, @Param('id') id: string) {
+    return this.addressService.create(id, createAddressDto);
   }
 
   @Patch(':id')
@@ -46,7 +46,7 @@ export class AddressController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.addressService.remove(+id);
+  removeAddress(@Param('id') id: string) {
+    return this.addressService.removeAddress(+id);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthPayload, IAuthPayload } from './auth.decorator';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth-guard';
@@ -17,6 +17,11 @@ export class AuthController {
     return await this.authService.signIn(signInDto.email, signInDto.password);
   }
 
+  @Post('/signout')
+  async signOut(@Body() signOutDto: Record<string, any>) {
+    return await this.authService.signOut(signOutDto.id);
+  }
+
   @Post('/refresh')
   async refreshToken(@Body() refreshTokenDto: Record<string, any>) {
     return await this.authService.validateRefreshToken(refreshTokenDto.email, refreshTokenDto.refreshToken);
@@ -25,14 +30,21 @@ export class AuthController {
   @Get('/self')
   @UseGuards(JwtAuthGuard)
   async self(@AuthPayload() user: IAuthPayload) {
-    return user;
+    return this.authService.validateUser(user?.id);
   }
 
   @Post('/change-password')
   @UseGuards(JwtAuthGuard)
   changePassword(@Body() user, @AuthPayload() requestor: IAuthPayload) {}
 
-  @Post('/reset-password')
+  @Patch('/update-password')
   @UseGuards(JwtAuthGuard)
-  resetPassword(@Body('id') id: string) {}
+  resetPassword(
+    @Body('id') id: string,
+    @Body('current_password') current_password: string,
+    @Body('password') password: string,
+    @AuthPayload() user: IAuthPayload,
+  ) {
+    return this.authService.resetPassword(user.email, current_password, password);
+  }
 }

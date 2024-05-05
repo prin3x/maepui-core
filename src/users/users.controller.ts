@@ -24,11 +24,6 @@ export class UsersController {
   }
 
   @Get(':id')
-  /**
-   * Find a user by id
-   * @param {string} id - string
-   * @returns The user object.
-   */
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
@@ -36,6 +31,16 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Patch(':id/change-password')
+  changePassword(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.changePassword(id, updateUserDto.password);
+  }
+
+  @Patch(':id/name-email')
+  changeNameAndEmail(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.changeNameAndEmail(id, updateUserDto.name, updateUserDto.email);
   }
 
   @Delete(':id')

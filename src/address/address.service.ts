@@ -21,11 +21,24 @@ export class AddressService {
     @InjectRepository(Address)
     private addressRepository: Repository<Address>,
   ) {}
-  async create(createAddressDto: CreateAddressDto, userId: string) {
+  async create(userId: string, createAddressDto: CreateAddressDto) {
+    this.logger.log('[AddressService] - create');
     const address = this.addressRepository.create(createAddressDto);
-    address.user_id = userId;
+    address.user_id = '06aa6257-7238-4326-8d9f-08a52468eaeb';
+    try {
+      await this.addressRepository.save(address);
+    } catch (error) {
+      this.logger.error(`[AddressService] - create - error: ${error}`);
+      throw new Error(error);
+    }
+  }
 
-    return await this.addressRepository.save(address);
+  async updateAddress(id: number, updateAddressDto: UpdateAddressDto) {
+    const address = await this.addressRepository.findOne({ where: { id } });
+    if (!address) {
+      throw new Error('Address not found');
+    }
+    return await this.addressRepository.save({ ...address, ...updateAddressDto });
   }
 
   async findUserAddress(userId: string) {
@@ -79,7 +92,11 @@ export class AddressService {
     return `This action updates a #${id} address`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+  async removeAddress(id: number) {
+    const address = await this.addressRepository.findOne({ where: { id } });
+    if (!address) {
+      throw new Error('Address not found');
+    }
+    return await this.addressRepository.remove(address);
   }
 }

@@ -17,6 +17,7 @@ export class MediaService {
   ) {}
 
   async uploadFiles(files: Express.Multer.File[], bucket: string, type: MediaTypeEnum): Promise<string[]> {
+    this.logger.log(`[${this.constructor.name}] - Uploading files to ${bucket}`);
     let conputedFiles = [];
     const rtnFilePaths = [];
     if (Array.isArray(files)) {
@@ -64,6 +65,7 @@ export class MediaService {
   }
 
   async bulkRemoveFiles(bucket: string, keys: string[]): Promise<void> {
+    this.logger.log(`[${this.constructor.name}] - Bulk removing files from ${bucket}`);
     await this.minioService.bulkDeleteObjects(bucket, keys);
   }
 
@@ -117,9 +119,9 @@ export class MediaService {
     try {
       await this.minioService.deleteObject(bucket, [objectName]);
       await this.mediaRepository.softDelete(id);
-      Logger.log(`Object ${objectName} removed successfully from bucket ${bucket}`);
+      this.logger.log(`Object ${objectName} removed successfully from bucket ${bucket}`);
     } catch (error) {
-      Logger.error(`Error deleting file from Minio: ${error.message}`);
+      this.logger.error(`Error deleting file from Minio: ${error.message}`);
       throw new BadRequestException(error);
     }
   }
@@ -127,9 +129,9 @@ export class MediaService {
   async deleteAllObjects(bucketName: string): Promise<void> {
     try {
       await this.minioService.deleteAllObjects(bucketName);
-      Logger.log(`All objects removed successfully from bucket ${bucketName}`);
+      this.logger.log(`All objects removed successfully from bucket ${bucketName}`);
     } catch (error) {
-      Logger.error(`Error removing objects from bucket ${bucketName}: ${error.message}`);
+      this.logger.error(`Error removing objects from bucket ${bucketName}: ${error.message}`);
       throw new BadRequestException(error);
     }
   }

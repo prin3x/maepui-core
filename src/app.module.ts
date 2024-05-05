@@ -11,9 +11,7 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { PaymentsModule } from './payments/payments.module';
 import { SalesModule } from './sales/sales.module';
-import { ProductImagesModule } from './product-images/product-images.module';
 import { CategoriesModule } from './categories/categories.module';
-import { ProductCategoriesModule } from './product-categories/product-categories.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { TagsModule } from './tags/tags.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -57,9 +55,7 @@ console.log(NODE_ENV, 'NODE_ENV');
     OrderItemsModule,
     PaymentsModule,
     SalesModule,
-    ProductImagesModule,
     CategoriesModule,
-    ProductCategoriesModule,
     BlogsModule,
     TagsModule,
     ReviewsModule,

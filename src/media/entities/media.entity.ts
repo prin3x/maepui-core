@@ -1,16 +1,12 @@
 import { Blog } from 'src/blogs/entities/blog.entity';
 import { Category } from 'src/categories/entities/category.entity';
-import { ProductImage } from 'src/product-images/entities/product-image.entity';
 import { Product } from 'src/products/entities/product.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';

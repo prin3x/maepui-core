@@ -42,8 +42,8 @@ export class OrdersService {
 
     // Create the order first without the orderItems
     const order = await this.orderRepository.save({
-      billing_address: `${billingAddress.address}, ${billingAddress.sub_district}, ${billingAddress.district}, ${billingAddress.province}, ${billingAddress.postalCode}`,
-      shipping_address: `${shippingAddress.address}, ${shippingAddress.sub_district}, ${shippingAddress.district}, ${shippingAddress.province}, ${shippingAddress.postalCode}`,
+      billing_address: `${billingAddress.address}`,
+      shipping_address: `${shippingAddress.address}`,
       customer,
       total_amount: createOrderDto.total_amount,
       transaction_id: createOrderDto.transaction_id,
@@ -92,6 +92,12 @@ export class OrdersService {
     return await this.orderRepository.findOne({
       where: { id },
       relations: ['orderItems', 'orderItems.product', 'customer'],
+    });
+  }
+
+  async findOrderByCustomerId(id: string) {
+    return await this.orderRepository.find({
+      where: { customer: { id } },
     });
   }
 

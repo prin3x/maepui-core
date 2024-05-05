@@ -13,10 +13,19 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export const USER_STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  BLOCKED: 'blocked',
+};
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ nullable: true })
+  name: string;
 
   @Column()
   email: string;
@@ -27,8 +36,15 @@ export class User {
   @Column({ nullable: true })
   refresh_token_hash?: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: USER_STATUS,
+    default: USER_STATUS.ACTIVE,
+  })
   status: string;
+
+  @Column({ nullable: true })
+  phone?: string;
 
   @Column({ nullable: true })
   avatar?: string;
@@ -42,7 +58,7 @@ export class User {
   @OneToMany(() => Roles, (role) => role.user)
   roles?: Roles[];
 
-  @OneToMany(() => Address, (role) => role.user)
+  @OneToMany(() => Address, (role) => role.user, { eager: true })
   addresses?: Address[];
 
   @CreateDateColumn()

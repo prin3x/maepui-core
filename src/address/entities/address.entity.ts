@@ -21,26 +21,14 @@ export class Address {
   @Column()
   address: string;
 
-  @Column()
-  sub_district: string;
-
-  @Column()
-  district: string;
-
-  @Column()
-  province: string;
-
   @Column({ default: 'ไทย' })
   country: string;
 
-  @Column()
-  postalCode: string;
+  @Column({ nullable: true })
+  pincode: string;
 
   @Column()
   phone: string;
-
-  @Column()
-  type: string;
 
   @Column({ default: true })
   isDefault: boolean;

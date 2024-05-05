@@ -75,11 +75,43 @@ export class AuthService {
     return newUser;
   }
 
+  async validateUser(id: string) {
+    const user = await this.userService.findOneById(id);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    delete user.password_hash;
+    delete user.refresh_token_hash;
+
+    return user;
+  }
+
   async validateToken(token: string) {
     try {
       return this.jwtService.verify(token);
     } catch (error) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  async resetPassword(email: string, oldPassword: string, newPassword: string) {
+    this.logger.log(`Resetting password for user ${email}`);
+    const user = await this.userService.findOne(email);
+    if (!user) {
+      throw new NotAcceptableException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 3);
+    await this.userService.resetPassword(user.id, passwordHash);
+  }
+
+  async signOut(id: string) {
+    await this.userService.updateRefreshToken(id, null);
   }
 }

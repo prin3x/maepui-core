@@ -9,13 +9,10 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductStatusEnum } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, ILike, In, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 import { isEmpty } from 'lodash';
 import { CategoriesService } from 'src/categories/categories.service';
-import { ProductImagesService } from 'src/product-images/product-images.service';
-import { ConfigService } from '@nestjs/config';
 import { MediaService } from 'src/media/media.service';
-import { MinioService } from 'src/minio/minio.service';
 import { TagsService } from 'src/tags/tags.service';
 import { FindProductDto } from './dto/find-product.dto';
 
@@ -27,10 +24,7 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
     private categoryService: CategoriesService,
     private tagService: TagsService,
-    private productImagesService: ProductImagesService,
     private mediaService: MediaService,
-    private minioService: MinioService,
-    private configService: ConfigService,
   ) {}
   async create(createProductDto: CreateProductDto) {
     this.logger.log('[ProductsService] - create, createProductDto: ' + JSON.stringify(createProductDto));
