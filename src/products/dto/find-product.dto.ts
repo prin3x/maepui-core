@@ -1,6 +1,8 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
+export type SortBy = 'low-high' | 'high-low' | 'asc' | 'desc';
+
 export class FindProductDto {
   @IsString()
   @IsOptional()
@@ -22,7 +24,7 @@ export class FindProductDto {
 
   @IsString({ each: true })
   @IsOptional()
-  sort: string;
+  sortBy: SortBy;
 
   @IsString()
   @IsOptional()

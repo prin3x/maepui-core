@@ -52,7 +52,7 @@ export class User {
   @OneToMany(() => Order, (order) => order.customer)
   orders?: Order[];
 
-  @OneToOne(() => Cart, (cart) => cart.user)
+  @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
   cart?: Cart;
 
   @OneToMany(() => Roles, (role) => role.user)

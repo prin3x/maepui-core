@@ -9,7 +9,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductStatusEnum } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, ILike, In, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 import { isEmpty } from 'lodash';
 import { CategoriesService } from 'src/categories/categories.service';
 import { MediaService } from 'src/media/media.service';
@@ -94,11 +94,12 @@ export class ProductsService {
 
   async findAll(query: FindProductDto) {
     this.logger.log('[ProductsService] - findAll');
-    const { page = 1, paginate, category_ids, search, ids } = query;
+    const { page = 1, paginate, category_ids, search, ids, sortBy } = query;
     const limit = Number(paginate) || 10;
     const offset = paginate ? (page - 1) * limit : 0;
     let products = [];
     let where: FindOptionsWhere<Product> = { deleted_at: null };
+    let orderBy: FindOptionsOrder<Product> = { created_at: 'DESC' };
 
     if (search) {
       where = { ...where, name: ILike(`%${search}%`) };
@@ -111,10 +112,24 @@ export class ProductsService {
     if (ids) {
       where = { ...where, id: In(ids.split(',')) };
     }
+
+    if (sortBy) {
+      switch (sortBy) {
+        case 'low-high':
+        case 'asc':
+          orderBy = { price: 'ASC' };
+          break;
+        case 'high-low':
+        case 'desc':
+          orderBy = { price: 'DESC' };
+          break;
+      }
+    }
+
     products = await this.productsRepository.find({
       where,
       relations: ['categories', 'galleries', 'tags', 'thumbnail'],
-      order: { created_at: 'DESC' },
+      order: orderBy,
       take: limit,
       skip: offset,
     });

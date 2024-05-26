@@ -25,7 +25,7 @@ export class Cart {
 
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
-  user: string;
+  user: User;
 
   @Column({
     type: 'uuid',
@@ -34,6 +34,6 @@ export class Cart {
   })
   user_id: string;
 
-  @OneToMany(() => CartItem, (cartItem) => cartItem.cart)
+  @OneToMany(() => CartItem, (cartItem) => cartItem.cart, { cascade: true })
   cartItems: CartItem[];
 }
