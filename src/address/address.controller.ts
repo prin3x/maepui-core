@@ -40,6 +40,12 @@ export class AddressController {
     return this.addressService.create(id, createAddressDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  createOwnAddress(@AuthPayload() requestor: IAuthPayload, @Body() createAddressDto: CreateAddressDto) {
+    return this.addressService.create(requestor.id, createAddressDto);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
     return this.addressService.update(+id, updateAddressDto);

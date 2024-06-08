@@ -24,13 +24,15 @@ export class AddressService {
   async create(userId: string, createAddressDto: CreateAddressDto) {
     this.logger.log('[AddressService] - create');
     const address = this.addressRepository.create(createAddressDto);
-    address.user_id = '06aa6257-7238-4326-8d9f-08a52468eaeb';
+    address.user_id = userId;
     try {
       await this.addressRepository.save(address);
     } catch (error) {
       this.logger.error(`[AddressService] - create - error: ${error}`);
       throw new Error(error);
     }
+
+    return address;
   }
 
   async updateAddress(id: number, updateAddressDto: UpdateAddressDto) {
