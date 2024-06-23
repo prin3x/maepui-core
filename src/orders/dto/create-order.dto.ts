@@ -3,6 +3,7 @@ import { OrderItem } from 'src/order-items/entities/order-item.entity';
 
 export class CreateOrderDto {
   @IsString()
+  @IsOptional()
   customer_id?: string;
 
   @IsNotEmpty()
@@ -27,11 +28,8 @@ export class CreateOrderDto {
 
   @IsNotEmpty()
   @IsString()
-  transaction_id: string;
-
-  @IsNotEmpty()
-  @IsString()
-  shipping_method: string;
+  @IsOptional()
+  shipping_method?: string;
 
   @IsOptional()
   @IsString()

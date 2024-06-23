@@ -66,13 +66,8 @@ export class UsersService {
   }
 
   async findOne(_email): Promise<User> {
-    let user: User;
-    try {
-      user = await this.repo.findOne({ where: { email: _email } });
-    } catch (error) {
-      throw new NotFoundException('No user is found');
-    }
-    return user;
+    this.logger.log(`[UsersService] - findOne, _email: ${_email}`);
+    return await this.repo.findOne({ where: { email: _email } });
   }
 
   async findOneById(id: string): Promise<User> {

@@ -8,7 +8,6 @@ export default () => ({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
     migration: process.env.POSTGRES_MIGRATION === 'true',
-    synchronize: process.env.POSTGRES_SYNC === 'true',
     logging: process.env.POSTGRES_LOGGING === 'true',
     // dropSchema: true,
     entities: ['dist/**/*.entity{.ts,.js}'],

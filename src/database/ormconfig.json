@@ -1,0 +1,13 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5001,
+    "username": "api",
+    "password": "api",
+    "database": "maepui_core_test",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "migrations": ["dist/migrations/*.js"],
+    "cli": {
+      "migrationsDir": "src/database/migrations"
+    }
+  }

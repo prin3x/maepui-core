@@ -69,7 +69,6 @@ export class AuthService {
     }
     const passwordHash = await bcrypt.hash(signUpDto.password, 3);
     const newUser = await this.userService.create({ ...signUpDto, password: passwordHash, email: signUpDto.email });
-
     // this.mailService.sendWelcomeEmail(user.email, user.email);
 
     return newUser;

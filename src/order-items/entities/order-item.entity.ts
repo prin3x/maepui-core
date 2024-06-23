@@ -17,10 +17,10 @@ export class OrderItem {
   id: number;
 
   @Column()
-  order_id: number;
+  order_id: string;
 
   @Column()
-  product_id: number;
+  product_id: string;
 
   @Column()
   quantity: number;
@@ -41,7 +41,9 @@ export class OrderItem {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @ManyToOne(() => Order, (order) => order.orderItems)
+  @ManyToOne(() => Order, (order) => order.orderItems, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'order_id' })
   order: Order;
 

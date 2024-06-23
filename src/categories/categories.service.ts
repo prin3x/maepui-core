@@ -115,7 +115,7 @@ export class CategoriesService {
     if (isEmpty(existingCategory)) {
       throw new BadRequestException(`Category with id ${id} does not exist`);
     }
-    const thumbnailMedia = await this.mediaService.findOneByKey(thumbnail.key);
+    const thumbnailMedia = await this.mediaService.findOneByKey(thumbnail?.key);
 
     if (!thumbnailMedia) {
       throw new BadRequestException('Invalid thumbnail');

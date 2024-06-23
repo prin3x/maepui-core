@@ -7,10 +7,12 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Payment } from 'src/payments/entities/payment.entity';
 
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
 
@@ -56,12 +58,17 @@ export class Order {
   @Column({ nullable: true })
   tracking_information?: string;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
+    cascade: true,
+  })
   orderItems: OrderItem[];
 
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
   customer?: User;
+
+  @OneToOne(() => Payment, (payment) => payment.order)
+  payment: Payment;
 
   @CreateDateColumn()
   created_at: Date;

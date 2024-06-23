@@ -28,16 +28,16 @@ import { Tag } from 'src/tags/entities/tag.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { SettingsModule } from './settings/settings.module';
 import { FaqModule } from './faq/faq.module';
+import datasource from './database/datasource';
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-console.log(NODE_ENV, 'NODE_ENV');
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      load: [configuration],
+      load: [configuration, datasource],
       envFilePath: `.env.${NODE_ENV}`,
     }),
     TypeOrmModule.forRootAsync({
