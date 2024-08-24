@@ -13,6 +13,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Post('/register-admin')
+  registerAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.registerAdmin(createUserDto);
+  }
+
   @Get(':id')
   async findOneById(@Param('id') id: string) {
     return this.usersService.findOneById(id);

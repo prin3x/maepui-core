@@ -18,8 +18,8 @@ export class Roles {
   @Column()
   name: string;
 
-  @Column()
-  permissions: string;
+  @Column('simple-array')
+  permissions: string[];
 
   @ManyToOne(() => User, (user) => user.roles)
   @JoinColumn({ name: 'user_id' })

@@ -55,7 +55,7 @@ export class User {
   @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
   cart?: Cart;
 
-  @OneToMany(() => Roles, (role) => role.user)
+  @OneToMany(() => Roles, (role) => role.user, { eager: true })
   roles?: Roles[];
 
   @OneToMany(() => Address, (role) => role.user, { eager: true })

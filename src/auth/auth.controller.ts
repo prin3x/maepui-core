@@ -12,6 +12,11 @@ export class AuthController {
     return await this.authService.signUp(signUpDto);
   }
 
+  @Post('/signup-admin')
+  async signUpAdmin(@Body() signUpDto: Record<string, any>) {
+    return await this.authService.signUpAdmin(signUpDto);
+  }
+
   @Post('/signin')
   async signIn(@Body() signInDto: Record<string, any>) {
     return await this.authService.signIn(signInDto.email, signInDto.password);

@@ -8,11 +8,39 @@ import { FindUserDto } from './dto/find-user.dto';
 import * as bcrypt from 'bcrypt';
 import { OrdersService } from 'src/orders/orders.service';
 import { Address } from 'src/address/entities/address.entity';
+import { Roles } from 'src/roles/entities/roles.entity';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
-  constructor(@InjectRepository(User) private repo: Repository<User>, private ordersService: OrdersService) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private ordersService: OrdersService,
+    @InjectRepository(Roles) private rolesRepo: Repository<Roles>,
+  ) {}
+
+  async registerAdmin(createUserDto: CreateUserDto) {
+    const { email, password } = createUserDto;
+    let roles;
+    try {
+      roles = await this.rolesRepo.find({ where: { name: 'admin' } });
+    } catch (error) {
+      this.logger.error('[UsersService] - registerAdmin, error: ' + JSON.stringify(error));
+      throw new NotFoundException('Error registering admin');
+    }
+    if (!roles || roles.length === 0) {
+      const newRole = await this.rolesRepo.create({ name: 'admin', permissions: ['admin'] });
+      roles = await this.rolesRepo.save(newRole);
+    }
+    const userData = {
+      ...createUserDto,
+      email,
+      password_hash: password,
+      status: USER_STATUS.ACTIVE,
+      roles: [roles], // Assign the role entity
+    };
+    return this.create(userData);
+  }
 
   async create(createUserDto: CreateUserDto) {
     this.logger.log('[UsersService] - create, createUserDto: ' + JSON.stringify(createUserDto));
@@ -28,15 +56,22 @@ export class UsersService {
       throw new NotFoundException('User already exists');
     }
 
+    let role = await this.rolesRepo.findOne({ where: { name: 'user' } });
+    if (!role) {
+      const newRole = await this.rolesRepo.create({ name: 'user', permissions: ['user'] });
+      role = await this.rolesRepo.save(newRole);
+    }
+
     const userData = {
       ...createUserDto,
       email,
       password_hash: password,
       status: USER_STATUS.ACTIVE,
+      roles: [role],
     };
 
     try {
-      user = this.repo.save(userData);
+      user = await this.repo.save(userData);
     } catch (error) {
       this.logger.error('[UsersService] - create, error: ' + JSON.stringify(error));
       throw new NotFoundException('Error creating user');

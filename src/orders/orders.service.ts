@@ -142,7 +142,7 @@ export class OrdersService {
     const meta = { total: 0, page, limit };
 
     orders = await this.orderRepository.find({
-      relations: ['orderItems', 'customer'],
+      relations: ['orderItems', 'customer', 'payment'],
       take: limit,
       skip: offset,
     });
@@ -155,7 +155,7 @@ export class OrdersService {
   async findOne(id: string) {
     return await this.orderRepository.findOne({
       where: { id },
-      relations: ['orderItems', 'orderItems.product', 'customer'],
+      relations: ['orderItems', 'orderItems.product', 'customer', 'payment'],
     });
   }
 

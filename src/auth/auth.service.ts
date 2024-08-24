@@ -23,6 +23,20 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
+  async signUpAdmin(signUpDto: Record<string, any>) {
+    const user = await this.userService.findOne(signUpDto.email);
+    if (user) {
+      throw new NotAcceptableException('User already exists');
+    }
+    const passwordHash = await bcrypt.hash(signUpDto.password, 3);
+    return this.userService.registerAdmin({
+      ...signUpDto,
+      password: passwordHash,
+      email: signUpDto.email,
+      roles: ['admin'],
+    });
+  }
+
   async signIn(email: string, password: string) {
     const user = await this.userService.findOne(email);
     if (!user) {
