@@ -1,23 +1,29 @@
-# Use a more recent Node.js version
+# Use the official Node.js image as the base image
 FROM node:20-alpine
 
-# Install pnpm globally
-RUN npm install -g pnpm
-
 # Set the working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml
+# Copy package.json and package-lock.json
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies using pnpm
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies
 RUN pnpm install
+
+# Install @nestjs/cli globally
+RUN pnpm add -g @nestjs/cli
 
 # Copy the rest of the application code
 COPY . .
 
+# Build the application
+RUN pnpm build
+
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the application
-CMD ["sh", "-c", "pnpm migration:run && pnpm start"]
+# Start the application
+CMD ["pnpm", "start"]

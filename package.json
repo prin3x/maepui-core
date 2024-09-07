@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node --max-old-space-size=4096 ./node_modules/.bin/nest build",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=prod nest start",
     "start:staging": "NODE_ENV=staging nest start",
@@ -20,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:run": "pnpm build && node --max-old-space-size=4096 -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/database/datasource.ts && pnpm start",
+    "migration:run": "pnpm build && ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/database/datasource.ts",
     "migration:generate": "pnpm build && ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/database/datasource.ts",
     "migration:create": "pnpm build && ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create src/database/migrations/newMigration",
     "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d ./src/database/datasource.ts",
