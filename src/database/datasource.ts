@@ -16,9 +16,7 @@ const config = {
   migrations: ['dist/database/migrations/*{.ts,.js}'],
   autoLoadEntities: true,
   synchronize: false,
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false, // Conditional SSL
 };
 
 export default registerAs('typeorm', () => config);
