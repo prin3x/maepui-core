@@ -12,7 +12,7 @@ export default () => ({
     // dropSchema: true,
     entities: ['dist/**/*.entity{.ts,.js}'],
     ssl: {
-      rejectUnauthorized: false,
+      rejectUnauthorized: process.env.POSTGRES_SSL === 'true',
     },
   },
   // s3: {
