@@ -7,8 +7,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Order } from 'src/orders/entities/order.entity';
 
 @Entity('address')
 export class Address {

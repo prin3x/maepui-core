@@ -79,7 +79,7 @@ export class SettingsService {
             },
           ],
           page_top_bar_dark: false,
-          support_number: '+1-555-186-5359',
+          support_number: '084-757-9988',
           today_deals: [1, 12, 8],
           category_ids: [1, 2, 3, 4, 5, 6, 7, 8],
         },
@@ -144,7 +144,7 @@ export class SettingsService {
             //   link: 'search',
             // },
           ],
-          support_number: '+1-555-186-5359',
+          support_number: '084-757-9988',
           support_email: 'support@fastkart.com',
           // play_store_url: 'https://play.google.com/',
           // app_store_url: 'https://apple.com/',
@@ -369,6 +369,17 @@ export class SettingsService {
           ],
           status: true,
         },
+        products_list_2: {
+          title: 'วาล์วน้ำ PVC',
+          product_ids: [
+            '9550659a-c69d-47ae-9226-e7ed756bbc01',
+            'ce119ae5-67e0-40ba-afec-34e0dfd45bd0',
+            'a8d90e99-c9de-40d7-a889-cf2b8b747f0e',
+            'fc2c2269-02d4-4561-bd3b-1f30dfcde7a7',
+            'a41d9346-8a7e-4cbe-9685-f9619deb4810',
+          ],
+          status: true,
+        },
         full_width_banner: {
           image_url: 'https://react.pixelstrap.net/fastkart/assets/themes/madrid/5.jpg',
           status: true,
@@ -379,27 +390,9 @@ export class SettingsService {
           status: true,
           product_ids: [],
         },
-        // delivery_banners: {
-        //   status: true,
-        //   banner_1: {
-        //     image_url: 'https://react.pixelstrap.net/fastkart/assets/themes/madrid/7.jpg',
-        //     redirect_link: {
-        //       link: 'vegetables-fruits',
-        //       link_type: 'collection',
-        //     },
-        //   },
-        //   banner_2: {
-        //     image_url: 'https://react.pixelstrap.net/fastkart/assets/themes/madrid/8.jpg',
-        //     redirect_link: {
-        //       link: 'vegetables-fruits',
-        //       link_type: 'collection',
-        //     },
-        //   },
-        // },
         featured_blogs: {
           title: 'บทความ',
           status: true,
-          // blog_ids: [17, 16, 19, 21, 20],
         },
       },
       slug: 'madrid',

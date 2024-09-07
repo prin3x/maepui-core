@@ -8,9 +8,9 @@ import { FindReviewDto } from './dto/find-review.dto';
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  @Post()
-  create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewsService.create(createReviewDto);
+  @Post('product/:productId')
+  create(@Param('productId') productId: string, @Body() createReviewDto: CreateReviewDto) {
+    return this.reviewsService.create(productId, createReviewDto);
   }
 
   @Get()
@@ -18,9 +18,9 @@ export class ReviewsController {
     return this.reviewsService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewsService.findOne(+id);
+  @Get('/product/:productId')
+  findOne(@Param('productId') productId: string) {
+    return this.reviewsService.findByProductId(productId);
   }
 
   @Patch(':id')

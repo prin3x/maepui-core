@@ -1,55 +1,75 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Patch, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthPayload, IAuthPayload } from './auth.decorator';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth-guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SignInDto } from './dto/sign-in.dto';
+import { SignOutDto } from './dto/sign-out.dyo';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
-  async signUp(@Body() signUpDto: Record<string, any>) {
-    return await this.authService.signUp(signUpDto);
+  async signUp(@Body() signUpDto: CreateUserDto) {
+    return await this.authService.signUp(signUpDto.email, signUpDto.password);
   }
 
   @Post('/signup-admin')
-  async signUpAdmin(@Body() signUpDto: Record<string, any>) {
-    return await this.authService.signUpAdmin(signUpDto);
+  async signUpAdmin(@Body() signUpDto: CreateUserDto) {
+    return await this.authService.signUpAdmin(signUpDto.email, signUpDto.password);
   }
 
   @Post('/signin')
-  async signIn(@Body() signInDto: Record<string, any>) {
+  async signIn(@Body() signInDto: SignInDto) {
     return await this.authService.signIn(signInDto.email, signInDto.password);
   }
 
-  @Post('/signout')
-  async signOut(@Body() signOutDto: Record<string, any>) {
-    return await this.authService.signOut(signOutDto.id);
+  @Post('/signin-admin')
+  async signInAdmin(@Body() signInDto: SignInDto) {
+    return await this.authService.signInAdmin(signInDto.email, signInDto.password);
   }
 
-  @Post('/refresh')
-  async refreshToken(@Body() refreshTokenDto: Record<string, any>) {
-    return await this.authService.validateRefreshToken(refreshTokenDto.email, refreshTokenDto.refreshToken);
+  @Post('/signout')
+  async signOut(@Body() signOutDto: SignOutDto) {
+    return await this.authService.signOut(signOutDto.email);
   }
 
   @Get('/self')
-  @UseGuards(JwtAuthGuard)
   async self(@AuthPayload() user: IAuthPayload) {
-    return this.authService.validateUser(user?.id);
+    return await this.authService.validateUser(user?.id);
   }
 
   @Post('/change-password')
-  @UseGuards(JwtAuthGuard)
-  changePassword(@Body() user, @AuthPayload() requestor: IAuthPayload) {}
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @AuthPayload() requestor: IAuthPayload,
+    @Res() res: Response,
+  ) {
+    return await this.authService.resetPassword(
+      requestor.email,
+      changePasswordDto.current_password,
+      changePasswordDto.password,
+    );
+  }
 
   @Patch('/update-password')
-  @UseGuards(JwtAuthGuard)
-  resetPassword(
-    @Body('id') id: string,
-    @Body('current_password') current_password: string,
-    @Body('password') password: string,
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
     @AuthPayload() user: IAuthPayload,
+    @Res() res: Response,
   ) {
-    return this.authService.resetPassword(user.email, current_password, password);
+    return await this.authService.resetPassword(
+      user.email,
+      resetPasswordDto.current_password,
+      resetPasswordDto.password,
+    );
+  }
+
+  @Post('/reset-password')
+  async resetPasswordLink(@Body() email: string, @Res() res: Response) {
+    return await this.authService.sendResetPasswordLink(email);
   }
 }

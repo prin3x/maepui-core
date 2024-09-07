@@ -18,12 +18,12 @@ export class CartsController {
   // }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  
   async addItemToCart(@AuthPayload() requestor: IAuthPayload, @Body() body: AddItemToCartDto[]) {
     return await this.cartsService.addItemToCart(requestor.id, body);
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Get()
   async findOneByUserId(@AuthPayload() requestor: IAuthPayload) {
     const userId = requestor.id;

@@ -155,9 +155,7 @@ export class ProductsService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    this.logger.log(
-      '[ProductsService] - update, id: ' + id + ', updateProductDto: ' + JSON.stringify(updateProductDto),
-    );
+    this.logger.log('[ProductsService] - update, id: ' + id);
 
     // Find if id exists
     const existingProduct = await this.productsRepository.findOne({
@@ -198,7 +196,7 @@ export class ProductsService {
       ...existingProduct,
       ...updateProductDto,
       thumbnail: thumbnailMedia,
-      galleries: media,
+      galleries: media.length ? media : [thumbnailMedia],
       categories: existingCollection,
       tags: existingTags,
     });

@@ -7,7 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from 'src/users/users.module';
 import configuration from 'src/config/configuration';
-import { MyMailerModule } from 'src/mailer/mailer.module';
+import { MyMailerModule } from 'src/services/mailer/mailer.module';
+import { firebaseAuth } from 'src/config/firebase-config';
 
 @Module({
   imports: [
@@ -29,7 +30,14 @@ import { MyMailerModule } from 'src/mailer/mailer.module';
     }),
     MyMailerModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: 'FIREBASE_AUTH',
+      useValue: firebaseAuth,
+    },
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

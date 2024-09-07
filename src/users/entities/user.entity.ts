@@ -1,7 +1,6 @@
 import { Address } from 'src/address/entities/address.entity';
 import { Cart } from 'src/carts/entities/cart.entity';
 import { Order } from 'src/orders/entities/order.entity';
-import { Roles } from 'src/roles/entities/roles.entity';
 import {
   Column,
   CreateDateColumn,
@@ -25,16 +24,13 @@ export class User {
   id: string;
 
   @Column({ nullable: true })
+  firebase_uid: string;
+
+  @Column({ nullable: true })
   name: string;
 
   @Column()
   email: string;
-
-  @Column()
-  password_hash: string;
-
-  @Column({ nullable: true })
-  refresh_token_hash?: string;
 
   @Column({
     type: 'enum',
@@ -55,8 +51,8 @@ export class User {
   @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
   cart?: Cart;
 
-  @OneToMany(() => Roles, (role) => role.user, { eager: true })
-  roles?: Roles[];
+  @Column({ nullable: false, default: 'user' })
+  role: string;
 
   @OneToMany(() => Address, (role) => role.user, { eager: true })
   addresses?: Address[];

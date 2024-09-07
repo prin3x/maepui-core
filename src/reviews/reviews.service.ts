@@ -5,6 +5,7 @@ import { Review } from './entities/review.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { FindReviewDto } from './dto/find-review.dto';
+import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -12,13 +13,16 @@ export class ReviewsService {
   constructor(
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
-  async create(createReviewDto: CreateReviewDto) {
+  async create(productId: string, createReviewDto: CreateReviewDto) {
     this.logger.log('[ReviewsService] - create, createReviewDto: ' + JSON.stringify(createReviewDto));
-    const { rating, content, title, productId } = createReviewDto;
+    const { rating, description, title } = createReviewDto;
     let review;
+    const product = await this.productRepository.findOne({ where: { id: productId } });
     try {
-      review = await this.reviewRepository.save({ rating, content, title, productId });
+      review = await this.reviewRepository.save({ rating, description, title, product });
     } catch (error) {
       this.logger.error('[ReviewsService] - create, error: ' + JSON.stringify(error));
       throw new BadRequestException('Error creating review');
@@ -33,12 +37,12 @@ export class ReviewsService {
     const offset = paginate ? (page - 1) * limit : 0;
 
     let reviews: Review[] = [];
-    let meta = { total: 0, page, limit };
+    const meta = { total: 0, page, limit };
 
     let where: FindOptionsWhere<Review> = { deleted_at: null };
 
     if (productId) {
-      where = { ...where, product: productId };
+      where = { ...where, product: { id: productId } };
     }
 
     try {
@@ -58,8 +62,15 @@ export class ReviewsService {
     return { data: reviews, ...meta };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findByProductId(productId: string) {
+    const reviews = await this.reviewRepository.find({
+      where: {
+        product: {
+          id: productId,
+        },
+      },
+    });
+    return reviews;
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {

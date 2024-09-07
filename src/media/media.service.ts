@@ -5,6 +5,7 @@ import { In, Repository } from 'typeorm';
 import { MinioService } from 'src/minio/minio.service';
 import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class MediaService {
@@ -31,25 +32,35 @@ export class MediaService {
         const objectName = `${Date.now()}.${fileExt}`;
         const filePath = file.path;
 
-        await this.minioService.uploadFile(bucket, objectName, filePath);
+        // Use the provided bucket or default to the project's main bucket
+        const bucketName = 'maepui-ba064.appspot.com' || bucket || 'maepui-ba064.appspot.com';
+        const bucketRef = admin.storage().bucket(`gs://${bucketName}`);
+        const [fileUpload] = await bucketRef.upload(filePath, {
+          destination: objectName,
+          public: true, // Make the file publicly accessible
+        });
 
-        const url = await this.minioService.generateStaticUrl(bucket, objectName);
+        // Get the public URL
+        const url = await fileUpload.getSignedUrl({
+          action: 'read',
+          expires: '03-01-2500', // Set a far future expiration date
+        });
 
         const media = this.mediaRepository.create({
-          bucket,
+          bucket: bucketName,
           key: objectName,
           type,
-          url,
+          url: url[0], // Use the generated URL
         });
 
         await this.mediaRepository.save(media);
 
-        rtnFilePaths.push(url);
+        rtnFilePaths.push(url[0]);
 
         fs.unlinkSync(filePath);
       }
     } catch (error) {
-      Logger.error(`Error uploading file to Minio: ${error.message}`);
+      Logger.error(`Error uploading file to Firebase Storage: ${error.message}`);
       throw error;
     }
 
@@ -70,7 +81,11 @@ export class MediaService {
   }
 
   async findAll(): Promise<Media[]> {
-    const media = await this.mediaRepository.find();
+    const media = await this.mediaRepository.find({
+      order: {
+        created_at: 'DESC',
+      },
+    });
 
     return media;
   }

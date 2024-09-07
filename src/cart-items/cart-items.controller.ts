@@ -14,7 +14,7 @@ export class CartItemsController {
     return this.cartItemsService.createCartItem(createCartItemDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Get()
   findAll() {
     return this.cartItemsService.findAll();
@@ -25,13 +25,13 @@ export class CartItemsController {
     return this.cartItemsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Patch(':id')
   update(@Param('id') cartItemId: string, @Body() updateCartItemDto: UpdateCartItemDto) {
     return this.cartItemsService.updateCartItemQuantity(cartItemId, updateCartItemDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cartItemsService.remove(+id);

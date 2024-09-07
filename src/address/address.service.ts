@@ -90,8 +90,12 @@ export class AddressService {
     return `This action returns a #${id} address`;
   }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
+  async update(id: number, updateAddressDto: UpdateAddressDto) {
+    const address = await this.addressRepository.findOne({ where: { id } });
+    if (!address) {
+      throw new Error('Address not found');
+    }
+    return await this.addressRepository.save({ ...address, ...updateAddressDto });
   }
 
   async removeAddress(id: number) {

@@ -2,10 +2,12 @@ import { Injectable, Logger, Param, UploadedFile } from '@nestjs/common';
 import { MinioService } from 'src/minio/minio.service';
 import * as fs from 'fs';
 import { MediaService } from 'src/media/media.service';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class UploadService {
   constructor(private readonly minioService: MinioService, private readonly mediaService: MediaService) {}
+
   async uploadFiles(@UploadedFile() files: Express.Multer.File[], @Param('bucket') bucket: string): Promise<string[]> {
     let conputedFiles = [];
     const rtnFilePaths = [];
@@ -20,19 +22,29 @@ export class UploadService {
         const objectName = `${Date.now()}.${fileExt}`;
         const filePath = file.path;
 
-        await this.minioService.uploadFile(bucket, objectName, filePath);
+        // Upload file to Firebase Storage
+        const bucketName = 'maepui-ba064.appspot.com' || bucket;
+        const bucketRef = admin.storage().bucket(`gs://${bucketName}`);
+        const [fileUpload] = await bucketRef.upload(filePath, {
+          destination: objectName,
+          public: true, // Make the file publicly accessible
+        });
 
-        const url = await this.minioService.getObjectUrl(bucket, objectName);
+        // Get the public URL
+        const url = await fileUpload.getSignedUrl({
+          action: 'read',
+          expires: '03-01-2500', // Set a far future expiration date
+        });
 
         rtnFilePaths.push(url);
 
         fs.unlinkSync(filePath);
       }
     } catch (error) {
-      Logger.error(`Error uploading file to Minio: ${error.message}`);
+      Logger.error(`Error uploading file to Firebase Storage: ${error.message}`);
       throw error;
     }
 
-    return rtnFilePaths;
+    return rtnFilePaths.flat();
   }
 }

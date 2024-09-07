@@ -11,6 +11,9 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
-  @IsOptional()
-  roles?: string[];
+  @IsString()
+  firebase_uid: string;
+
+  @IsString()
+  role: string;
 }

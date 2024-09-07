@@ -7,16 +7,14 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { Payment } from 'src/payments/entities/payment.entity';
+import { Payment, PaymentStatus } from 'src/payments/entities/payment.entity';
 
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
 
-export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED';
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn('uuid')
@@ -67,8 +65,8 @@ export class Order {
   @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
   customer?: User;
 
-  @OneToOne(() => Payment, (payment) => payment.order)
-  payment: Payment;
+  @OneToMany(() => Payment, (payment) => payment.order)
+  payments: Payment[];
 
   @CreateDateColumn()
   created_at: Date;

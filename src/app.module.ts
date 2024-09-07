@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -18,17 +18,17 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { MinioModule } from './minio/minio.module';
 import { UploadModule } from './upload/upload.module';
 import { MediaModule } from './media/media.module';
-import { RolesModule } from './roles/roles.module';
 import { AddressModule } from './address/address.module';
 import configuration from './config/configuration';
 import { User } from 'src/users/entities/user.entity';
-import { Roles } from 'src/roles/entities/roles.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { SettingsModule } from './settings/settings.module';
 import { FaqModule } from './faq/faq.module';
 import datasource from './database/datasource';
+import './config/firebase-config';
+import { AuthMiddleware } from './middleswares/auth.middleware';
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -45,7 +45,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
       useFactory: (config: ConfigService) => config.get('database'),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Roles, User, Category, Tag]),
+    TypeOrmModule.forFeature([User, Category, Tag]),
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -62,7 +62,6 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
     MinioModule,
     UploadModule,
     MediaModule,
-    RolesModule,
     AddressModule,
     SettingsModule,
     FaqModule,
@@ -70,4 +69,26 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: 'auth/signin', method: RequestMethod.POST },
+        { path: 'auth/signin-admin', method: RequestMethod.POST },
+        { path: 'auth/signup', method: RequestMethod.POST },
+        { path: 'auth/signup-admin', method: RequestMethod.POST },
+        { path: 'settings/home', method: RequestMethod.GET },
+        { path: 'settings/themeOptions', method: RequestMethod.GET },
+        { path: 'blogs', method: RequestMethod.GET },
+        { path: 'products', method: RequestMethod.GET },
+        { path: 'products/:id', method: RequestMethod.GET },
+        { path: 'blogs/slug/:slug', method: RequestMethod.GET },
+        { path: 'categories', method: RequestMethod.GET },
+        { path: 'tags', method: RequestMethod.GET },
+        { path: 'reviews', method: RequestMethod.GET },
+        { path: 'faq', method: RequestMethod.GET },
+      )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

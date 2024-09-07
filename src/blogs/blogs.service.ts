@@ -9,6 +9,7 @@ import { TagsService } from 'src/tags/tags.service';
 import { CategoriesService } from 'src/categories/categories.service';
 import { MinioService } from 'src/minio/minio.service';
 import { FindBlogDto } from './dto/find-blog.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class BlogsService {
@@ -44,7 +45,9 @@ export class BlogsService {
       throw new BadRequestException('Invalid category ids');
     }
 
-    const blogData = Object.assign(createBlogDto, { tags }, { categories: existingCategories });
+    const blogSlug = slugify(createBlogDto.title, { lower: true });
+
+    const blogData = Object.assign(createBlogDto, { tags }, { categories: existingCategories }, { slug: blogSlug });
 
     try {
       blog = await this.blogRepository.save(blogData);
@@ -97,11 +100,26 @@ export class BlogsService {
     return blog;
   }
 
-  async findOne(id: string) {
-    this.logger.log('[BlogsService] - findOne, id: ' + id + '');
+  async findOneById(id: string) {
+    this.logger.log('[BlogsService] - findOneById, id: ' + id + '');
     let blog;
     try {
       blog = await this.blogRepository.findOneOrFail({ where: { id }, relations: ['tags', 'categories', 'thumbnail'] });
+    } catch (error) {
+      this.logger.error('[BlogsService] - findOneById, error: ' + JSON.stringify(error));
+      throw new BadRequestException('Error finding blog');
+    }
+    return blog;
+  }
+
+  async findOneBySlug(slug: string) {
+    this.logger.log('[BlogsService] - findOneBySlug, slug: ' + slug + '');
+    let blog;
+    try {
+      blog = await this.blogRepository.findOneOrFail({
+        where: { slug },
+        relations: ['tags', 'categories', 'thumbnail'],
+      });
     } catch (error) {
       this.logger.error('[BlogsService] - findOne, error: ' + JSON.stringify(error));
       throw new BadRequestException('Error finding blog');

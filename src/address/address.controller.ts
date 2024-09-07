@@ -9,7 +9,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findUserAddress(@AuthPayload() requestor: IAuthPayload) {
     return await this.addressService.findUserAddress(requestor.id);
@@ -40,7 +39,6 @@ export class AddressController {
     return this.addressService.create(id, createAddressDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   createOwnAddress(@AuthPayload() requestor: IAuthPayload, @Body() createAddressDto: CreateAddressDto) {
     return this.addressService.create(requestor.id, createAddressDto);

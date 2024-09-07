@@ -19,14 +19,14 @@ export class Review {
   title?: string;
 
   @Column({ nullable: true })
-  content?: string;
+  description?: string;
 
   @Column()
   rating: number;
 
   @ManyToOne(() => Product, (product) => product.reviews)
   @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
-  product: string;
+  product: Product;
 
   @CreateDateColumn()
   created_at: Date;

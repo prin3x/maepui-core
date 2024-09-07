@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, CategoryTypeEnum } from 'src/categories/entities/category.entity';
-import { Roles } from 'src/roles/entities/roles.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
@@ -12,8 +11,6 @@ export class AppService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Roles)
-    private readonly rolesRepository: Repository<Roles>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Tag)
@@ -36,10 +33,6 @@ export class AppService {
     await this.userRepository.delete({
       email: 'admin@example.com',
     });
-    await this.authService.signUp({
-      email: 'admin@example.com',
-      password: '123123123',
-    });
 
     return 'Roles and user seeded';
   }
@@ -49,94 +42,12 @@ export class AppService {
       where: { type: CategoryTypeEnum.PRODUCT },
     });
     if (categories.length === 0) {
-      // Seed product categories
-      // Electronics
-      const category = this.categoryRepository.create({
-        name: 'Electronics',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Agriculture
       const category1 = this.categoryRepository.create({
         name: 'Agriculture',
         type: CategoryTypeEnum.PRODUCT,
       });
-      // Fashion
-      const category2 = this.categoryRepository.create({
-        name: 'Fashion',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Food
-      const category3 = this.categoryRepository.create({
-        name: 'Food',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Health
-      const category4 = this.categoryRepository.create({
-        name: 'Health',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Sports
-      const category5 = this.categoryRepository.create({
-        name: 'Sports',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Travel
-      const category6 = this.categoryRepository.create({
-        name: 'Travel',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Furniture
-      const category7 = this.categoryRepository.create({
-        name: 'Furniture',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Books
-      const category8 = this.categoryRepository.create({
-        name: 'Books',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Music
-      const category9 = this.categoryRepository.create({
-        name: 'Music',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Movies
-      const category10 = this.categoryRepository.create({
-        name: 'Movies',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Games
-      const category11 = this.categoryRepository.create({
-        name: 'Games',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Beauty
-      const category12 = this.categoryRepository.create({
-        name: 'Beauty',
-        type: CategoryTypeEnum.PRODUCT,
-      });
-      // Shoes
-      const category13 = this.categoryRepository.create({
-        name: 'Shoes',
-        type: CategoryTypeEnum.PRODUCT,
-      });
       // Save
-      await this.categoryRepository.save([
-        category,
-        category1,
-        category2,
-        category3,
-        category4,
-        category5,
-        category6,
-        category7,
-        category8,
-        category9,
-        category10,
-        category11,
-        category12,
-        category13,
-      ]);
+      await this.categoryRepository.save([category1]);
       return 'Categories seeded';
     }
 

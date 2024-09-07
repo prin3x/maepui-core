@@ -1,50 +1,32 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Address } from 'src/address/entities/address.entity';
+import { OrdersService } from 'src/orders/orders.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { USER_STATUS, User } from './entities/user.entity';
 import { FindUserDto } from './dto/find-user.dto';
-import * as bcrypt from 'bcrypt';
-import { OrdersService } from 'src/orders/orders.service';
-import { Address } from 'src/address/entities/address.entity';
-import { Roles } from 'src/roles/entities/roles.entity';
+import { USER_STATUS, User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
-  constructor(
-    @InjectRepository(User) private repo: Repository<User>,
-    private ordersService: OrdersService,
-    @InjectRepository(Roles) private rolesRepo: Repository<Roles>,
-  ) {}
+  constructor(@InjectRepository(User) private repo: Repository<User>, private ordersService: OrdersService) {}
 
   async registerAdmin(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
-    let roles;
-    try {
-      roles = await this.rolesRepo.find({ where: { name: 'admin' } });
-    } catch (error) {
-      this.logger.error('[UsersService] - registerAdmin, error: ' + JSON.stringify(error));
-      throw new NotFoundException('Error registering admin');
-    }
-    if (!roles || roles.length === 0) {
-      const newRole = await this.rolesRepo.create({ name: 'admin', permissions: ['admin'] });
-      roles = await this.rolesRepo.save(newRole);
-    }
     const userData = {
       ...createUserDto,
       email,
       password_hash: password,
       status: USER_STATUS.ACTIVE,
-      roles: [roles], // Assign the role entity
+      role: 'admin',
     };
     return this.create(userData);
   }
 
   async create(createUserDto: CreateUserDto) {
-    this.logger.log('[UsersService] - create, createUserDto: ' + JSON.stringify(createUserDto));
-    const { email, password } = createUserDto;
+    this.logger.log('[UsersService] - create, createUserDto: ' + createUserDto.email);
+    const { email } = createUserDto;
     let user;
 
     // Find if user already exists
@@ -56,18 +38,11 @@ export class UsersService {
       throw new NotFoundException('User already exists');
     }
 
-    let role = await this.rolesRepo.findOne({ where: { name: 'user' } });
-    if (!role) {
-      const newRole = await this.rolesRepo.create({ name: 'user', permissions: ['user'] });
-      role = await this.rolesRepo.save(newRole);
-    }
-
     const userData = {
       ...createUserDto,
       email,
-      password_hash: password,
       status: USER_STATUS.ACTIVE,
-      roles: [role],
+      role: createUserDto.role,
     };
 
     try {
@@ -106,6 +81,9 @@ export class UsersService {
   }
 
   async findOneById(id: string): Promise<User> {
+    if (!id) {
+      throw new NotFoundException('No user is found');
+    }
     let user: User;
     try {
       user = await this.repo.findOne({ where: { id }, relations: ['addresses', 'orders'] });
@@ -113,11 +91,6 @@ export class UsersService {
       throw new NotFoundException('No user is found');
     }
     return user;
-  }
-
-  async updateRefreshToken(id: string, refreshToken: string) {
-    this.logger.log('[UsersService] - updateRefreshToken');
-    return await this.repo.update({ id }, { refresh_token_hash: refreshToken });
   }
 
   async updateAddress(id: string, address: Address) {
@@ -132,37 +105,6 @@ export class UsersService {
     }
   }
 
-  async resetPassword(id: string, newPasswordHash: string) {
-    this.logger.log('[UsersService] - resetPassword');
-    try {
-      return await this.repo.update({ id }, { password_hash: newPasswordHash });
-    } catch (error) {
-      this.logger.error('[UsersService] - changePassword, error: ' + JSON.stringify(error));
-      throw new NotFoundException('Error changing password');
-    }
-  }
-
-  async changePassword(id: string, password: string) {
-    this.logger.log('[UsersService] - changePassword');
-
-    try {
-      // Check if the old password is correct
-      const user = await this.findOneById(id);
-      if (!bcrypt.compareSync(password, user.password_hash)) {
-        throw new BadRequestException('Old password is incorrect');
-      }
-
-      // Hash the new password
-      const passwordHash = await bcrypt.hash(password, 3);
-
-      // Update the user
-      return await this.repo.update({ id }, { password_hash: passwordHash });
-    } catch (error) {
-      this.logger.error('[UsersService] - changePassword, error: ' + JSON.stringify(error));
-      throw new NotFoundException('Error changing password');
-    }
-  }
-
   async changeNameAndEmail(id: string, name: string, email: string) {
     this.logger.log('[UsersService] - changeNameAndEmail');
     try {
@@ -171,13 +113,5 @@ export class UsersService {
       this.logger.error('[UsersService] - changeNameAndEmail, error: ' + JSON.stringify(error));
       throw new NotFoundException('Error changing name and email');
     }
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

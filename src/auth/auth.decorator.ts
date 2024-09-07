@@ -1,11 +1,10 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Roles } from 'src/roles/entities/roles.entity';
 
 export interface IAuthPayload {
   id: string;
   email: string;
   iat?: number;
-  role: Roles[];
+  role: string;
   avatar: string;
   hash: string;
 }

@@ -19,20 +19,36 @@ export class PaymentsService {
     private readonly uploadService: UploadService, // Inject UploadService
   ) {}
   async rejectPayment(paymentId: string) {
-    const payment = await this.paymentRepository.findOne({ where: { id: paymentId } });
+    const payment = await this.paymentRepository.findOne({ relations: { order: true }, where: { id: paymentId } });
     if (!payment) {
       throw new BadRequestException('Payment not found');
     }
-    payment.status = PaymentStatus.REJECTED;
-    return this.paymentRepository.save(payment);
+    const order = await this.orderRepository.findOne({ where: { id: payment.order.id } });
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+    return this.paymentRepository.manager.transaction(async (transactionalEntityManager) => {
+      payment.status = PaymentStatus.REJECTED;
+      order.payment_status = PaymentStatus.REJECTED;
+      await transactionalEntityManager.save(Order, order);
+      return await transactionalEntityManager.save(Payment, payment);
+    });
   }
   async approvePayment(paymentId: string) {
-    const payment = await this.paymentRepository.findOne({ where: { id: paymentId } });
+    const payment = await this.paymentRepository.findOne({ relations: { order: true }, where: { id: paymentId } });
     if (!payment) {
       throw new BadRequestException('Payment not found');
     }
-    payment.status = PaymentStatus.APPROVED;
-    return this.paymentRepository.save(payment);
+    const order = await this.orderRepository.findOne({ where: { id: payment.order.id } });
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+    return this.paymentRepository.manager.transaction(async (transactionalEntityManager) => {
+      payment.status = PaymentStatus.APPROVED;
+      order.payment_status = PaymentStatus.APPROVED;
+      await transactionalEntityManager.save(Order, order);
+      return await transactionalEntityManager.save(Payment, payment);
+    });
   }
 
   async confirmPayment(orderId: string, paymentSlip: Array<Express.Multer.File>) {
@@ -47,22 +63,26 @@ export class PaymentsService {
       throw new BadRequestException('Order not found');
     }
 
-    try {
-      const uploadedFiles = await this.uploadService.uploadFiles(paymentSlip, 'maepui-core');
+    return this.paymentRepository.manager.transaction(async (transactionalEntityManager) => {
+      try {
+        const uploadedFiles = await this.uploadService.uploadFiles(paymentSlip, 'maepui-core');
+        const paymentSlipUrls = uploadedFiles.at(0);
 
-      const paymentSlipUrls = uploadedFiles.at(0);
+        const payment = this.paymentRepository.create({
+          amount: order.total_amount,
+          status: PaymentStatus.PENDING,
+          order,
+          payment_slip_url: paymentSlipUrls, // Assuming you have a field to store the URLs
+        });
 
-      const payment = this.paymentRepository.create({
-        amount: order.total_amount,
-        status: PaymentStatus.PENDING,
-        order,
-        payment_slip_url: paymentSlipUrls, // Assuming you have a field to store the URLs
-      });
+        await transactionalEntityManager.save(Order, order);
+        await transactionalEntityManager.save(Payment, payment);
 
-      return this.paymentRepository.save(payment);
-    } catch (error) {
-      throw new BadRequestException(`Error confirming payment: ${error.message}`);
-    }
+        return payment;
+      } catch (error) {
+        throw new BadRequestException(`Error confirming payment: ${error.message}`);
+      }
+    });
   }
 
   create(createPaymentDto: CreatePaymentDto) {

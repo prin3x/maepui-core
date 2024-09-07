@@ -7,11 +7,8 @@ export class CreateReviewDto {
 
   @IsOptional()
   @IsString()
-  content?: string;
+  description?: string;
 
   @IsNumber()
   rating: number;
-
-  @IsNumber()
-  productId: number;
 }
