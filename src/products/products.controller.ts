@@ -4,7 +4,6 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FindProductDto } from './dto/find-product.dto';
 import { ProductStatusEnum } from './entities/product.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 
 @Controller('products')
 export class ProductsController {

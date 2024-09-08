@@ -54,15 +54,21 @@ export class ProductsService {
     }
 
     // Find media
-    const mediaKeys = galleries.map((gal) => gal.key);
-    const media = await this.mediaService.findByKeys(mediaKeys);
+    let media = [];
+    if (galleries?.length) {
+      const mediaKeys = galleries.map((gal) => gal.key);
+      media = await this.mediaService.findByKeys(mediaKeys);
 
-    if (media.length !== mediaKeys.length) {
-      throw new BadRequestException('Media does not exist');
+      if (media.length !== mediaKeys.length) {
+        throw new BadRequestException('Media does not exist');
+      }
     }
 
     // Get thumbnail from media
-    const thumbnailMedia = await this.mediaService.findOneByKey(thumbnail.key);
+    let thumbnailMedia;
+    if (thumbnail) {
+      thumbnailMedia = await this.mediaService.findOneByKey(thumbnail.key);
+    }
 
     const productData = this.productsRepository.create({
       ...createProductDto,

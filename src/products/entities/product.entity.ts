@@ -39,7 +39,7 @@ export class Product {
   @Column({ type: 'float' })
   price: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', nullable: true })
   sale_price: number;
 
   @Column({ nullable: true, type: 'float' })
